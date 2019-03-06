@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+
+<style type="text/css">
+
+	canvas{
+		border: 1px black solid;
+	}
+	
+	.imagen{
+		display: none;
+	}
+
+</style>
+
+</head>
+<body>
+
+<div><b>Leva la bola a la zona de meta</b></div>
+<img id="imagen" src="putin.png">
+
+<div id="mensajes"></div>
+
+<canvas id="miCanvas" width="600" height="400"></canvas>
+
+<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+
+	var canvas = document.getElementById("miCanvas");
+	var ctx	= canvas.getContext("2d");
+	var bola = document.getElementById("imagen");
+	
+	var xBola = 100;
+	var yBola = 100;
+	var direccion = 1;
+	var interval = null;
+
+	
+	//zona de meta
+	
+	var zonaMeta = 
+		{
+			x : canvas.width-100,
+			y : canvas.height/2,
+			ancho: 100,
+			alto: 200,
+			color: "rgb(150,150,255)"
+		};
+	
+	interval = setInterval(avanzar, 20);
+	
+	$("html").keydown(function(e){
+	
+	alert("has pulsado: "+e.keyCode);
+	switch(e.keyCode){
+		case 37:
+			direccion =2;
+			break;
+		case 38:
+			direccion = 4;
+			break;
+		case 39:
+			direccion =1;
+			break;
+		case 40:
+			direccion = 3;
+			break;
+		default:
+			alert("direccion no valida")
+	}
+	
+	
+	});
+	
+	
+	
+	function avanzar (){
+		switch (direccion){
+		case 1:
+			xBola++;
+			break;
+		case 2:
+			xBola--;
+			break;
+		case 3:
+			yBola++;
+			break;
+		case 4:
+			yBola--;
+			break;
+		default:
+			alert("direccion no valida");
+			return;
+		}
+		$("#mensajes").html("direccion: "+ direccion +
+				"xBola"+ xBola+"yBola"+yBola);
+		
+		//voy a comprobar si la bola ha llegado a la meta
+		if(xBola >= zonaMeta.x && xBola <= (zonaMeta.x+zonaMeta.ancho)
+				&& yBola >= zonaMeta.y && yBola <= (zonaMeta.y+zonaMeta.alto)){
+			alert("FELICIDADES HAS GANADO");
+			clearInterval(interval);
+		}
+		
+		//voy a comprobar si la pelota se ha salido por la derecha
+		if(xBola > (zonaMeta.x+zonaMeta.ancho))
+		{
+			alert("la bola se salió por la derecha");
+			clearInterval(interval);
+		}
+		
+		//Voy a comprobar si la pelota ha salido por debajo
+		
+		if(yBola > (zonaMeta.y+zonaMeta.alto))
+		{
+			alert("la bola se salió por abajo");
+			clearInterval(interval);
+		}
+		
+		if(xBola < 0)
+		{
+			alert("la bola se salió por la izquierda");
+			clearInterval(interval);
+		}
+		
+		if(yBola < 0)
+		{
+			alert("la bola se salió por arriba");
+			clearInterval(interval);
+		}
+		
+		dibujarCanvas();
+	}//end avanzar
+	
+	function dibujarCanvas(){
+		
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		
+		
+		//Dibujo bola
+		
+		ctx.beginPath();
+		ctx.fillStyle = "rgb(255,255,0)";
+		ctx.drawImage(bola,xBola,yBola);
+		ctx.fill();
+	
+		//Dibujo meta
+		
+		ctx.beginPath();
+		ctx.fillStyle = "rgb(255,150,0)";
+		ctx.rect(zonaMeta.x,zonaMeta.y,zonaMeta.ancho,zonaMeta.alto);
+		ctx.fill();
+	}
+
+	
+//ejercicio de animacion bola:
+	
+//1-permitir mover la bola hacia la izquuierda y hacia la derecha
+
+//2-indicar al usuario que hay perdido si la bola sale por la izuqierda o por arriba de la pantalla
+
+//3-susutituir la imagen de la bola por un png
+
+//4-agregra 2 obstaculos rectangulares de forma que si la bola colisiona con cualquiera de ellos le indicaremos
+//al usuario que ha perdido
+
+//5-mover los obstaculos siguiendo un patron continuo arriba-abajo izquierda-derecha
+
+//6-posicionar de forma aleatoria tanto la meta como los obstaculos
+
+//7-cada vez que se meta la bola en la meta, volver a ponerla en su posicion inicial, pedir al usuario
+//que la vuelva a llevar a la meta pero incrementando la velocidad
+
+//8-indicar al usuario las veces que se ha conseguido meter la bola en la meta cuando hay perdido
+
+//repetir el punto del ejercicio de las diferencias donde pedimos el nombre de usuario, esta vez guardando
+//en un array no el tiempo que ha tardado sino las veces que ha metido la bola en la meta
+	
+
+</script>
+
+</body>
+</html>
